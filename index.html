@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Os ❤️</title>
+
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap');
+
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        background: #f7f3ef;
+        color: #292522;
+        font-family: 'Inter', sans-serif;
+        min-height: 100vh;
+        overflow-x: hidden;
+    }
+
+    /* Background */
+    .background {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        overflow: hidden;
+        z-index: 0;
+    }
+
+    .blob {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(80px);
+        opacity: .35;
+    }
+
+    .blob.one {
+        width: 350px;
+        height: 350px;
+        background: #e8c8c8;
+        top: -100px;
+        left: -100px;
+    }
+
+    .blob.two {
+        width: 400px;
+        height: 400px;
+        background: #d8d0c3;
+        bottom: -150px;
+        right: -100px;
+    }
+
+    /* Main */
+    .container {
+        position: relative;
+        z-index: 1;
+        width: min(680px, 92%);
+        margin: auto;
+        padding: 70px 0;
+    }
+
+    /* Lock screen */
+    .lock {
+        text-align: center;
+        min-height: 90vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .lock-icon {
+        font-size: 26px;
+        margin-bottom: 22px;
+        opacity: .6;
+    }
+
+    .lock input {
+        font-family: 'Inter', sans-serif;
+        font-size: 15px;
+        letter-spacing: 3px;
+        text-align: center;
+        border: 1px solid #ded6cf;
+        background: rgba(255,255,255,.6);
+        border-radius: 12px;
+        padding: 15px 20px;
+        width: 220px;
+        color: #292522;
+        margin-bottom: 16px;
+    }
+
+    .lock input:focus {
+        outline: none;
+        border-color: #9d8980;
+    }
+
+    .lock-error {
+        font-size: 13px;
+        color: #b57c72;
+        height: 18px;
+        margin-bottom: 6px;
+    }
+
+    /* Intro */
+    .intro {
+        text-align: center;
+        min-height: 80vh;
+        display: none;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .small {
+        font-size: 12px;
+        letter-spacing: 4px;
+        text-transform: uppercase;
+        color: #8f7770;
+        margin-bottom: 25px;
+    }
+
+    h1 {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: clamp(58px, 11vw, 95px);
+        font-weight: 500;
+        line-height: .85;
+        margin-bottom: 30px;
+    }
+
+    .intro p {
+        max-width: 440px;
+        line-height: 1.8;
+        font-size: 15px;
+        color: #6d6460;
+        margin-bottom: 45px;
+    }
+
+    button {
+        border: none;
+        cursor: pointer;
+        font-family: inherit;
+    }
+
+    .start {
+        background: #292522;
+        color: white;
+        padding: 17px 34px;
+        border-radius: 50px;
+        font-size: 14px;
+        transition: .3s;
+    }
+
+    .start:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 30px rgba(0,0,0,.15);
+    }
+
+    /* Quiz */
+    .quiz {
+        display: none;
+        padding-top: 60px;
+    }
+
+    .progress {
+        height: 2px;
+        background: #ddd5ce;
+        margin-bottom: 50px;
+        position: relative;
+    }
+
+    .progress-bar {
+        position: absolute;
+        height: 100%;
+        background: #292522;
+        width: 0%;
+        transition: .5s ease;
+    }
+
+    .question-number {
+        font-size: 12px;
+        letter-spacing: 3px;
+        color: #a18c84;
+        margin-bottom: 18px;
+        text-transform: uppercase;
+    }
+
+    .question {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: clamp(38px, 7vw, 55px);
+        line-height: 1;
+        font-weight: 500;
+        margin-bottom: 40px;
+    }
+
+    .answers {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .answer {
+        width: 100%;
+        padding: 19px 22px;
+        border: 1px solid #ded6cf;
+        background: rgba(255,255,255,.45);
+        border-radius: 12px;
+        text-align: left;
+        font-size: 15px;
+        color: #403a36;
+        transition: .25s;
+    }
+
+    .answer:hover {
+        background: white;
+        border-color: #9d8980;
+        transform: translateX(5px);
+    }
+
+    .answer.correct {
+        background: #e5eee5;
+        border-color: #91aa91;
+    }
+
+    .answer.wrong {
+        background: #f2e2e0;
+        border-color: #c89b95;
+    }
+
+    /* Feedback */
+    .feedback {
+        display: none;
+        margin-top: 30px;
+        padding: 25px;
+        background: rgba(255,255,255,.65);
+        border-radius: 15px;
+        animation: fadeUp .5s ease;
+    }
+
+    .feedback-title {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 27px;
+        margin-bottom: 8px;
+    }
+
+    .feedback-text {
+        color: #6d6460;
+        line-height: 1.7;
+        font-size: 14px;
+    }
+
+    .next {
+        margin-top: 22px;
+        background: #292522;
+        color: white;
+        padding: 13px 25px;
+        border-radius: 50px;
+        font-size: 13px;
+    }
+
+    /* Final */
+    .final {
+        display: none;
+        min-height: 80vh;
+        text-align: center;
+        padding-top: 80px;
+        padding-bottom: 60px;
+        animation: fadeUp .8s ease;
+    }
+
+    .final-heart {
+        font-size: 45px;
+        margin-bottom: 25px;
+        animation: heartbeat 1.8s infinite;
+    }
+
+    .final h2 {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: clamp(55px, 10vw, 80px);
+        font-weight: 500;
+        line-height: .9;
+        margin-bottom: 30px;
+    }
+
+    .final p {
+        max-width: 450px;
+        margin: auto;
+        line-height: 1.9;
+        color: #6d6460;
+        font-size: 15px;
+    }
+
+    /* ---- Photo gallery (prize) ---- */
+    .gallery-intro {
+        margin-top: 70px;
+    }
+
+    .gallery-small {
+        font-size: 12px;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        color: #a18c84;
+        margin-bottom: 14px;
+    }
+
+    .gallery-title {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: clamp(30px, 5.5vw, 42px);
+        font-weight: 500;
+        margin-bottom: 45px;
+    }
+
+    .gallery {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 30px 22px;
+        padding: 0 10px;
+    }
+
+    .polaroid {
+        background: white;
+        padding: 10px 10px 30px;
+        width: 168px;
+        box-shadow: 0 10px 26px rgba(41,37,34,.14);
+        opacity: 0;
+        animation: polaroidIn .6s ease forwards;
+        transition: transform .3s ease, box-shadow .3s ease;
+    }
+
+    .polaroid:hover {
+        transform: scale(1.06) rotate(0deg) !important;
+        box-shadow: 0 16px 34px rgba(41,37,34,.2);
+        z-index: 2;
+    }
+
+    .polaroid img {
+        width: 100%;
+        aspect-ratio: 1 / 1;
+        object-fit: cover;
+        display: block;
+        background: #eee;
+    }
+
+    .polaroid figcaption {
+        font-family: 'Cormorant Garamond', serif;
+        font-style: italic;
+        font-size: 14px;
+        text-align: center;
+        margin-top: 10px;
+        color: #6d6460;
+    }
+
+    .polaroid:nth-child(1) { transform: rotate(-6deg); animation-delay: .1s; }
+    .polaroid:nth-child(2) { transform: rotate(4deg);  animation-delay: .25s; }
+    .polaroid:nth-child(3) { transform: rotate(-3deg); animation-delay: .4s; }
+    .polaroid:nth-child(4) { transform: rotate(5deg);  animation-delay: .55s; }
+    .polaroid:nth-child(5) { transform: rotate(-4deg); animation-delay: .7s; }
+    .polaroid:nth-child(6) { transform: rotate(3deg);  animation-delay: .85s; }
+
+    @keyframes polaroidIn {
+        from {
+            opacity: 0;
+            transform: translateY(18px) rotate(0deg) scale(.94);
+        }
+        to {
+            opacity: 1;
+        }
+    }
+
+    /* Animations */
+    @keyframes fadeUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes heartbeat {
+        0%, 100% { transform: scale(1); }
+        10% { transform: scale(1.15); }
+        20% { transform: scale(1); }
+        30% { transform: scale(1.12); }
+        40% { transform: scale(1); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .polaroid, .final-heart, .feedback { animation: none !important; opacity: 1 !important; }
+    }
+
+    /* Mobile */
+    @media(max-width: 600px) {
+        .container {
+            padding: 40px 0;
+        }
+
+        .intro {
+            min-height: 90vh;
+        }
+
+        .quiz {
+            padding-top: 30px;
+        }
+
+        .question {
+            font-size: 42px;
+        }
+
+        .polaroid {
+            width: 42%;
+        }
+    }
+</style>
+</head>
+
+<body>
+
+<div class="background">
+    <div class="blob one"></div>
+    <div class="blob two"></div>
+</div>
+
+<div class="container">
+
+    <!-- LÅS -->
+    <section class="lock" id="lock">
+
+        <div class="lock-icon">🔒</div>
+
+        <div class="small">kun for os</div>
+
+        <h1 style="font-size: clamp(34px, 7vw, 50px); margin-bottom: 20px;">Adgangskode</h1>
+
+        <p style="max-width: 340px; line-height: 1.7; font-size: 14px; color: #6d6460; margin-bottom: 30px;">
+            Du ved godt hvilken.
+        </p>
+
+        <input type="password" id="lockInput" placeholder="••••••••" inputmode="numeric" maxlength="20">
+        <div class="lock-error" id="lockError"></div>
+
+        <button class="start" onclick="checkPassword()">Lås op</button>
+
+    </section>
+
+
+    <!-- INTRO -->
+    <section class="intro" id="intro">
+
+        <div class="small">en lille rejse gennem os</div>
+
+        <h1>Kan du huske<br>det hele?</h1>
+
+        <p>
+            Jeg har samlet nogle små spørgsmål om os.
+            Nogle nemme. Nogle lidt sværere.
+            Og måske et par, hvor jeg håber,
+            du kan huske det samme som mig.
+        </p>
+
+        <button class="start" onclick="startQuiz()">
+            Lad os se ❤️
+        </button>
+
+    </section>
+
+
+    <!-- QUIZ -->
+    <section class="quiz" id="quiz">
+
+        <div class="progress">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+
+        <div class="question-number" id="questionNumber">
+            spørgsmål 01
+        </div>
+
+        <div class="question" id="question">
+            ...
+        </div>
+
+        <div class="answers" id="answers"></div>
+
+        <div class="feedback" id="feedback">
+
+            <div class="feedback-title" id="feedbackTitle"></div>
+
+            <div class="feedback-text" id="feedbackText"></div>
+
+            <button class="next" onclick="nextQuestion()">
+                Næste →
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- FINAL / PRÆMIE -->
+    <section class="final" id="final">
+
+        <div class="final-heart">♡</div>
+
+        <h2>Det var<br>vores historie.</h2>
+
+        <p>
+            Måske kan du ikke huske alle de små ting.
+            Det kan jeg heller ikke altid.
+            Men det er egentlig heller ikke det vigtigste.
+            <br><br>
+            Det vigtigste er alle de øjeblikke,
+            vi stadig har foran os.
+        </p>
+
+        <div class="gallery-intro">
+            <div class="gallery-small">præmien</div>
+            <div class="gallery-title">Nogle af mine yndlingsminder</div>
+        </div>
+
+        <div class="gallery" id="gallery"></div>
+
+    </section>
+
+</div>
+
+
+<script>
+
+const questions = [
+
+    {
+        question: "Hvor var vores første rigtige date?",
+        answers: [
+            "På en café",
+            "På en restaurant",
+            "I biografen",
+            "En gåtur"
+        ],
+        correct: 0,
+        correctText: "Præcis ❤️",
+        correctMessage: "Jeg kan stadig huske den dag. Det føltes lidt mere specielt, end jeg tror vi begge lod som om."
+    },
+
+    {
+        question: "Hvem skrev først efter vores første møde?",
+        answers: [
+            "Dig",
+            "Mig",
+            "Vi skrev samtidig",
+            "Ingen af os"
+        ],
+        correct: 1,
+        correctText: "Det gjorde jeg 😌",
+        correctMessage: "Og jeg er ret glad for, at jeg gjorde det."
+    },
+
+    {
+        question: "Hvad er noget, vi altid ender med at grine af?",
+        answers: [
+            "En intern joke",
+            "Dårlige film",
+            "Når vi farer vild",
+            "Vores dårlige humor"
+        ],
+        correct: 3,
+        correctText: "100% 😂",
+        correctMessage: "Det giver måske ikke mening for andre. Men det er lidt det, jeg elsker ved vores humor."
+    },
+
+    {
+        question: "Hvilken dag ville jeg helst opleve igen?",
+        answers: [
+            "Den første date",
+            "En helt almindelig søndag",
+            "En bestemt rejse",
+            "Den dag vi mødtes"
+        ],
+        correct: 2,
+        correctText: "Ja ❤️",
+        correctMessage: "Ikke fordi den var perfekt. Men fordi jeg var sammen med dig."
+    },
+
+    {
+        question: "Hvad tror du, jeg bedst kan lide ved dig?",
+        answers: [
+            "Dit smil",
+            "Din humor",
+            "Den måde du er på",
+            "Alt det ovenstående"
+        ],
+        correct: 3,
+        correctText: "Det var faktisk snyd...",
+        correctMessage: "For jeg kunne ikke vælge én."
+    }
+
+];
+
+/* ===========================================================
+   REDIGÉR HER: jeres billeder til præmien
+   - src: link til billedet (skift til jeres egne fotos)
+   - caption: en lille tekst under billedet (kan også være tom "")
+   Tilføj lige så mange I vil, galleriet tilpasser sig selv.
+
+   Tip til at bruge jeres egne billeder:
+   Læg fotos i en mappe ved siden af denne fil, f.eks. "billeder/",
+   og skriv f.eks. src: "billeder/foto1.jpg"
+   =========================================================== */
+const MINDE_BILLEDER = [
+    { src: "https://picsum.photos/seed/os1/400/400", caption: "vores første tur" },
+    { src: "https://picsum.photos/seed/os2/400/400", caption: "den dumme selfie" },
+    { src: "https://picsum.photos/seed/os3/400/400", caption: "den aften i regnvejr" },
+    { src: "https://picsum.photos/seed/os4/400/400", caption: "din yndlingskaffe" },
+    { src: "https://picsum.photos/seed/os5/400/400", caption: "solnedgangen" },
+    { src: "https://picsum.photos/seed/os6/400/400", caption: "helt almindelig søndag" },
+];
+
+/* REDIGÉR HER: adgangskoden */
+const PASSWORD = "24040101";
+
+function checkPassword() {
+
+    const input = document.getElementById("lockInput");
+    const error = document.getElementById("lockError");
+
+    if (input.value === PASSWORD) {
+
+        document.getElementById("lock").style.display = "none";
+        document.getElementById("intro").style.display = "flex";
+
+    } else {
+
+        error.innerText = "Prøv igen.";
+        input.value = "";
+        input.focus();
+
+    }
+
+}
+
+document.getElementById("lockInput").addEventListener("keydown", (e) => {
+    if (e.key === "Enter") checkPassword();
+});
+
+let currentQuestion = 0;
+let score = 0;
+
+function startQuiz() {
+
+    document.getElementById("intro").style.display = "none";
+    document.getElementById("quiz").style.display = "block";
+
+    showQuestion();
+
+}
+
+function showQuestion() {
+
+    const q = questions[currentQuestion];
+
+    document.getElementById("questionNumber").innerText =
+        `spørgsmål ${String(currentQuestion + 1).padStart(2, "0")}`;
+
+    document.getElementById("question").innerText = q.question;
+
+    document.getElementById("progressBar").style.width =
+        `${((currentQuestion) / questions.length) * 100}%`;
+
+    const answers = document.getElementById("answers");
+
+    answers.innerHTML = "";
+
+    document.getElementById("feedback").style.display = "none";
+
+    q.answers.forEach((answer, index) => {
+
+        const button = document.createElement("button");
+
+        button.className = "answer";
+        button.innerText = answer;
+
+        button.onclick = () => selectAnswer(index, button);
+
+        answers.appendChild(button);
+
+    });
+
+}
+
+function selectAnswer(index, button) {
+
+    const q = questions[currentQuestion];
+
+    const allButtons = document.querySelectorAll(".answer");
+
+    allButtons.forEach(btn => btn.disabled = true);
+
+    if (index === q.correct) {
+
+        button.classList.add("correct");
+
+        score++;
+
+        document.getElementById("feedbackTitle").innerText =
+            q.correctText;
+
+    } else {
+
+        button.classList.add("wrong");
+
+        allButtons[q.correct].classList.add("correct");
+
+        document.getElementById("feedbackTitle").innerText =
+            "Ik lader dig slippe 😌";
+
+    }
+
+    document.getElementById("feedbackText").innerText =
+        q.correctMessage;
+
+    document.getElementById("feedback").style.display = "block";
+
+}
+
+function nextQuestion() {
+
+    currentQuestion++;
+
+    if (currentQuestion >= questions.length) {
+
+        document.getElementById("quiz").style.display = "none";
+        document.getElementById("final").style.display = "block";
+
+        renderGallery();
+
+        return;
+
+    }
+
+    showQuestion();
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+
+}
+
+function renderGallery() {
+
+    const gallery = document.getElementById("gallery");
+    gallery.innerHTML = "";
+
+    MINDE_BILLEDER.forEach(item => {
+
+        const fig = document.createElement("figure");
+        fig.className = "polaroid";
+
+        const img = document.createElement("img");
+        img.src = item.src;
+        img.alt = item.caption || "";
+
+        fig.appendChild(img);
+
+        if (item.caption) {
+            const cap = document.createElement("figcaption");
+            cap.innerText = item.caption;
+            fig.appendChild(cap);
+        }
+
+        gallery.appendChild(fig);
+
+    });
+
+}
+
+</script>
+
+</body>
+</html>
