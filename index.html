@@ -555,12 +555,30 @@
         animation: fadeUp .3s ease;
     }
 
-    .lightbox img {
-        max-width: 100%;
+    .lightbox-polaroid {
+        background: white;
+        padding: 16px 16px 26px;
+        max-width: min(440px, 88vw);
         max-height: 100%;
-        border-radius: 10px;
         box-shadow: 0 25px 70px rgba(0,0,0,.5);
         cursor: default;
+    }
+
+    .lightbox-polaroid img {
+        width: 100%;
+        max-height: 70vh;
+        object-fit: cover;
+        display: block;
+    }
+
+    .lightbox-polaroid figcaption {
+        font-family: 'Cormorant Garamond', serif;
+        font-style: italic;
+        font-size: 18px;
+        text-align: center;
+        margin-top: 14px;
+        color: #6d6460;
+        min-height: 22px;
     }
 
     .lightbox-close {
@@ -704,9 +722,9 @@
     <!-- INTRO -->
     <section class="intro" id="intro">
 
-        <!-- REDIGÉR HER: forsidebillede. Læg Foto07.jpg ved siden af index.html -->
+        <!-- REDIGÉR HER: forsidebillede. Læg Foto14.jpg ved siden af index.html -->
         <div class="intro-photo-wrap">
-            <img src="Foto07.jpg" alt="" class="intro-photo">
+            <img src="Foto14.jpg" alt="" class="intro-photo">
         </div>
 
         <h1>18. AUGUST<br>2026</h1>
@@ -791,7 +809,10 @@
 <!-- LIGHTBOX: viser et billede i stort når man klikker på det -->
 <div class="lightbox" id="lightbox" onclick="closeLightbox()">
     <span class="lightbox-close" onclick="closeLightbox()">&times;</span>
-    <img id="lightboxImg" src="" alt="">
+    <figure class="lightbox-polaroid" onclick="event.stopPropagation()">
+        <img id="lightboxImg" src="" alt="">
+        <figcaption id="lightboxCaption"></figcaption>
+    </figure>
 </div>
 
 
@@ -946,18 +967,19 @@ const questions = [
    =========================================================== */
 const MINDE_BILLEDER = [
     { src: "Foto01.jpg", caption: "Vores første date" },
-    { src: "Foto02.jpg", caption: "Tak for trøst haha" },
-    { src: "Foto03.jpg", caption: "Fjolleri fra sommerhuset" },
+    { src: "Foto02.jpg", caption: "Kuh-tur" },
+    { src: "Foto03.jpg", caption: "Blev kærester" },
     { src: "Foto04.jpg", caption: "Din første dag i Aarhus" },
-    { src: "Foto05.jpg", caption: "Benjis gilde" },
-    { src: "Foto06.jpg", caption: "Tapas da du besøgte mig i Aarhus for anden gang" },
-    { src: "Foto07.jpg", caption: "Pre inden Benjis gilde" },
-    { src: "Foto08.jpg", caption: "Du er så sød, når du smiler" },
-    { src: "Foto09.jpg", caption: "Hyggelig i aften Aarhus" },
-    { src: "Foto10.jpg", caption: "Wow en gentleman" },
-    { src: "Foto11.jpg", caption: "Aften i sommerhus" },
-    { src: "Foto12.jpg", caption: "København" },
-    { src: "Foto13.jpg", caption: "Mere af det her, tak!!" },
+    { src: "Foto05.jpg", caption: "På vej hjem fra Wagrain" },
+    { src: "Foto06.jpg", caption: "Endnu en dag vi glædede os" },
+    { src: "Foto07.jpg", caption: "Et af mine yndlingsbilleder" },
+    { src: "Foto08.jpg", caption: "Sommerhus-hygge" },
+    { src: "Foto09.jpg", caption: "En helt almindelig, perfekt dag" },
+    { src: "Foto10.jpg", caption: "Griner af ingenting" },
+    { src: "Foto11.jpg", caption: "København" },
+    { src: "Foto12.jpg", caption: "Da du mødte min familie" },
+    { src: "Foto13.jpg", caption: "Flere af den slags, tak" },
+    { src: "Foto14.jpg", caption: "Den dag vi blev kærester" },
 ];
 
 /* REDIGÉR HER: adgangskoden */
@@ -1206,7 +1228,7 @@ function renderGallery() {
         const img = document.createElement("img");
         img.src = item.src;
         img.alt = item.caption || "";
-        img.onclick = () => openLightbox(item.src);
+        img.onclick = () => openLightbox(item);
 
         fig.appendChild(img);
 
@@ -1220,13 +1242,18 @@ function renderGallery() {
 
 }
 
-/* Lightbox: viser billedet i stort når man klikker på en polaroid */
-function openLightbox(src) {
+/* Lightbox: viser hele polaroid-billedet (foto + tekst) i stort,
+   når man klikker på en polaroid i galleriet. */
+function openLightbox(item) {
 
     const lightbox = document.getElementById("lightbox");
     const img = document.getElementById("lightboxImg");
+    const caption = document.getElementById("lightboxCaption");
 
-    img.src = src;
+    img.src = item.src;
+    img.alt = item.caption || "";
+    caption.innerText = item.caption || "";
+
     lightbox.classList.add("show");
 
 }
