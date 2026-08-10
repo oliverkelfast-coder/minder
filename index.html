@@ -129,6 +129,21 @@
         align-items: center;
     }
 
+    .intro-photo-wrap {
+        margin-bottom: 26px;
+    }
+
+    .intro-photo {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        object-fit: cover;
+        display: block;
+        margin: 0 auto;
+        border: 5px solid #fff;
+        box-shadow: 0 14px 32px rgba(41,37,34,.18);
+    }
+
     .small {
         font-size: 12px;
         letter-spacing: 4px;
@@ -644,6 +659,11 @@
     <!-- INTRO -->
     <section class="intro" id="intro">
 
+        <!-- REDIGÉR HER: forsidebillede. Læg Foto07.jpg ved siden af index.html -->
+        <div class="intro-photo-wrap">
+            <img src="Foto07.jpg" alt="" class="intro-photo">
+        </div>
+
         <h1>18. AUGUST<br>2026</h1>
 
         <div class="small">Jeg er så så så glad for dig, Astrid.</div>
@@ -732,6 +752,10 @@
    index.html (samme sted som Song01.mp3) og navngiv dem
    Foto01.jpg, Foto02.jpg, Foto03.jpg osv. i rækkefølge.
    Andet format end .jpg? Ret endelsen i src herunder.
+
+   NYT: hvert spørgsmål har nu et "wrongMessages"-array med én
+   individuel tekst til hver svarmulighed, der er forkert.
+   Feltet for det rigtige svar bruges ikke og kan stå tomt ("").
    =========================================================== */
 const questions = [
 
@@ -746,7 +770,13 @@ const questions = [
         ],
         correct: 2,
         correctText: "Præcis ❤️",
-        correctMessage: "Jeg tænkte selvfølgelig over hvor smuk du var, men jeg lagde allermest mærke til hvor betænksom du er som menneske, ud fra de historier du fortalte."
+        correctMessage: "Jeg tænkte selvfølgelig over hvor smuk du var, men jeg lagde allermest mærke til hvor betænksom du er som menneske, ud fra de historier du fortalte.",
+        wrongMessages: [
+            "Dit outfit var også flot, men det var ikke det der fangede mig mest 😄",
+            "Du var smuk, det er sandt - men det var ikke det vigtigste for mig den aften.",
+            "",
+            "Haha nej, det lagde jeg slet ikke mærke til (eller også har jeg fortrængt det)."
+        ]
     },
 
     {
@@ -760,7 +790,13 @@ const questions = [
         ],
         correct: 0,
         correctText: "Jepsi kondi",
-        correctMessage: "Det hjalp riiiigtig meget haha"
+        correctMessage: "Det hjalp riiiigtig meget haha",
+        wrongMessages: [
+            "",
+            "Det sagde du faktisk ikke - men tak for tanken 😉",
+            "Nej, det var lidt for optimistisk selv for dig haha",
+            "Nej nej, du var faktisk sød ved mig!"
+        ]
     },
 
     {
@@ -774,7 +810,13 @@ const questions = [
         ],
         correct: 1,
         correctText: "yesss!!🥰",
-        correctMessage: "Det svarer faktisk kun til 5,5 måned! hihi"
+        correctMessage: "Det svarer faktisk kun til 5,5 måned! hihi",
+        wrongMessages: [
+            "Tæt på, men ikke helt rigtigt!",
+            "",
+            "Nix, det var lidt længere tid end det.",
+            "Nej, vi skyndte os heldigvis lidt mere end det."
+        ]
     },
 
     {
@@ -788,7 +830,13 @@ const questions = [
         ],
         correct: 3,
         correctText: "Ja ❤️",
-        correctMessage: "Jeg ville så godt se den dag med nutidsbriller på. Se på os og tænke at de skulle bare vide hvor det ender."
+        correctMessage: "Jeg ville så godt se den dag med nutidsbriller på. Se på os og tænke at de skulle bare vide hvor det ender.",
+        wrongMessages: [
+            "Den dag var sjov, men ikke den jeg tænkte på.",
+            "God gæt, men nej.",
+            "Wagrain var fantastisk, men det var ikke den dag jeg mente.",
+            ""
+        ]
     },
 
     {
@@ -802,11 +850,17 @@ const questions = [
         ],
         correct: 3,
         correctText: "jeeeep ❤️",
-        correctMessage: "Vi begyndte, at skrive om at ses igen, og der kunne jeg mærke angsten ved tanken om hvis vi ikke skulle ses igen... Der vidste jeg, at jeg var oprigtigt vild med dig."
+        correctMessage: "Vi begyndte, at skrive om at ses igen, og der kunne jeg mærke angsten ved tanken om hvis vi ikke skulle ses igen... Der vidste jeg, at jeg var oprigtigt vild med dig.",
+        wrongMessages: [
+            "Sommerhuset var hyggeligt, men det var ikke der det gik op for mig.",
+            "Nej, det var ikke i København.",
+            "Tæt på, men nej - det var lidt senere.",
+            ""
+        ]
     },
 
     {
-        question: "Hvor mange gange har vi brugt ordet "glæder" i vores beskeder?",
+        question: 'Hvor mange gange har vi brugt ordet "glæder" i vores beskeder?',
         image: "Foto06.jpg",
         answers: [
             "67 gange",
@@ -816,7 +870,13 @@ const questions = [
         ],
         correct: 3,
         correctText: "Det var faktisk snyd...",
-        correctMessage: "For jeg kunne ikke vælge én."
+        correctMessage: "For jeg kunne ikke vælge én.",
+        wrongMessages: [
+            "Slet ikke nok gættet - vi er meget mere forventningsfulde end det!",
+            "Tættere på, men stadig alt for lavt sat.",
+            "God gæt, men vi slår rekorder haha.",
+            ""
+        ]
     }
 
 ];
@@ -867,6 +927,42 @@ document.getElementById("lockInput").addEventListener("keydown", (e) => {
     if (e.key === "Enter") checkPassword();
 });
 
+/* ===========================================================
+   REDIGÉR HER: hjertefyrværkeriet.
+   spawnHeartBurst() sender én "bølge" af hjerter af sted.
+   showCelebration() kalder den flere gange i træk for et
+   større og længerevarende fyrværkeri. Vil I have det endnu
+   vildere, kan I øge antallet af bølger, count-tallet, eller
+   distanceMax.
+   =========================================================== */
+function spawnHeartBurst(field, count, distanceMin, distanceMax) {
+
+    const hearts = ["❤️", "💛", "🩷", "❤️", "💗", "✨", "💫"];
+
+    for (let i = 0; i < count; i++) {
+
+        const p = document.createElement("span");
+        p.className = "heart-particle";
+        p.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+
+        const angle = Math.random() * Math.PI * 2;
+        const distance = distanceMin + Math.random() * (distanceMax - distanceMin);
+        const tx = Math.cos(angle) * distance;
+        const ty = Math.sin(angle) * distance;
+
+        p.style.setProperty("--tx", `${tx}px`);
+        p.style.setProperty("--ty", `${ty}px`);
+        p.style.setProperty("--rot", `${(Math.random() * 360) - 180}deg`);
+        p.style.setProperty("--size", `${16 + Math.random() * 36}px`);
+        p.style.setProperty("--dur", `${1.3 + Math.random() * 1.5}s`);
+        p.style.setProperty("--delay", `${Math.random() * 0.4}s`);
+
+        field.appendChild(p);
+
+    }
+
+}
+
 function showCelebration() {
 
     const celebrate = document.getElementById("celebrate");
@@ -875,29 +971,13 @@ function showCelebration() {
     celebrate.classList.add("show");
     field.innerHTML = "";
 
-    const hearts = ["❤️", "💛", "🩷", "❤️", "💗"];
-
-    for (let i = 0; i < 36; i++) {
-
-        const p = document.createElement("span");
-        p.className = "heart-particle";
-        p.textContent = hearts[Math.floor(Math.random() * hearts.length)];
-
-        const angle = Math.random() * Math.PI * 2;
-        const distance = 120 + Math.random() * 220;
-        const tx = Math.cos(angle) * distance;
-        const ty = Math.sin(angle) * distance;
-
-        p.style.setProperty("--tx", `${tx}px`);
-        p.style.setProperty("--ty", `${ty}px`);
-        p.style.setProperty("--rot", `${(Math.random() * 360) - 180}deg`);
-        p.style.setProperty("--size", `${16 + Math.random() * 26}px`);
-        p.style.setProperty("--dur", `${1.1 + Math.random() * 0.9}s`);
-        p.style.setProperty("--delay", `${Math.random() * 0.35}s`);
-
-        field.appendChild(p);
-
-    }
+    // Flere bølger af hjerter, med stigende afstand, giver et
+    // større og længerevarende fyrværkeri end en enkelt burst.
+    spawnHeartBurst(field, 42, 90, 260);
+    setTimeout(() => spawnHeartBurst(field, 42, 130, 320), 450);
+    setTimeout(() => spawnHeartBurst(field, 42, 160, 380), 950);
+    setTimeout(() => spawnHeartBurst(field, 36, 190, 440), 1500);
+    setTimeout(() => spawnHeartBurst(field, 30, 220, 480), 2150);
 
     const music = document.getElementById("bgMusic");
     music.volume = 0.6;
@@ -911,7 +991,7 @@ function showCelebration() {
             celebrate.classList.remove("show", "fade-out");
             document.getElementById("intro").style.display = "flex";
         }, 500);
-    }, 2600);
+    }, 5200);
 
 }
 
@@ -1002,6 +1082,9 @@ function selectAnswer(index, button) {
         document.getElementById("feedbackTitle").innerText =
             q.correctText;
 
+        document.getElementById("feedbackText").innerText =
+            q.correctMessage;
+
     } else {
 
         button.classList.add("wrong");
@@ -1014,10 +1097,11 @@ function selectAnswer(index, button) {
         document.getElementById("feedbackTitle").innerText =
             "Ik lader dig slippe 😌";
 
-    }
+        // Individuel tekst til netop det forkerte svar der blev valgt.
+        document.getElementById("feedbackText").innerText =
+            (q.wrongMessages && q.wrongMessages[index]) || q.correctMessage;
 
-    document.getElementById("feedbackText").innerText =
-        q.correctMessage;
+    }
 
     document.getElementById("feedback").style.display = "block";
 
