@@ -641,7 +641,7 @@
             Koden er din fødselsdato plus min (DDMMDDMM).
         </p>
 
-        <input type="password" id="lockInput" placeholder="••••••••" inputmode="numeric" maxlength="20">
+        <input type="text" id="lockInput" placeholder="••••••••" inputmode="numeric" pattern="[0-9]*" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="20" style="-webkit-text-security: disc; text-security: disc;">
         <div class="lock-error" id="lockError"></div>
 
         <button class="start" onclick="checkPassword()">Lås op</button>
@@ -908,7 +908,9 @@ function checkPassword() {
     const input = document.getElementById("lockInput");
     const error = document.getElementById("lockError");
 
-    if (input.value === PASSWORD) {
+    const cleanedValue = input.value.trim();
+
+    if (cleanedValue === PASSWORD) {
 
         document.getElementById("lock").style.display = "none";
         showCelebration();
