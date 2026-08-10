@@ -844,10 +844,10 @@ const questions = [
         correctText: "Præcis ❤️",
         correctMessage: "Jeg tænkte selvfølgelig over hvor smuk du var, men jeg lagde allermest mærke til hvor betænksom du er som menneske, ud fra de historier du fortalte.",
         wrongMessages: [
-            "Dit outfit var også flot, men det var ikke det der fangede mig mest 😄",
-            "Du var smuk, det er sandt - men det var ikke det vigtigste for mig den aften.",
+            "Dit outfit var så flot, men det var ikke det jeg bad mest mærke i 😄",
+            "Du var virkelig smuk, men det var ikke det vigtigste for mig den aften..",
             "",
-            "Haha nej, det lagde jeg slet ikke mærke til (eller også har jeg fortrængt det)."
+            "Hahah nejnejnej"
         ]
     },
 
@@ -865,9 +865,9 @@ const questions = [
         correctMessage: "Det hjalp riiiigtig meget haha",
         wrongMessages: [
             "",
-            "Det sagde du faktisk ikke - men tak for tanken 😉",
-            "Nej, det var lidt for optimistisk selv for dig haha",
-            "Nej nej, du var faktisk sød ved mig!"
+            "Det skrev du faktisk ikke... men tak fordi du synes jeg ser godt ud.",
+            "Arh. Jeg tror dog jeg var mere klar på den idé end du var haha",
+            "Du har altid været sød ved mig!"
         ]
     },
 
@@ -886,8 +886,8 @@ const questions = [
         wrongMessages: [
             "Tæt på, men ikke helt rigtigt!",
             "",
-            "Nix, det var lidt længere tid end det.",
-            "Nej, vi skyndte os heldigvis lidt mere end det."
+            "Det var liiidt længere tid end det.",
+            "Det skete heldigvis lidt før det."
         ]
     },
 
@@ -904,9 +904,9 @@ const questions = [
         correctText: "Ja ❤️",
         correctMessage: "Jeg ville så godt se den dag med nutidsbriller på. Se på os og tænke at de skulle bare vide hvor det ender.",
         wrongMessages: [
-            "Den dag var sjov, men ikke den jeg tænkte på.",
-            "God gæt, men nej.",
-            "Wagrain var fantastisk, men det var ikke den dag jeg mente.",
+            "Virkelig en god dag, men det er ikke den jeg allerhelst ville opleve igen.",
+            "Ikke helt rigtigt småkkke.",
+            "Wagrain var sjovr, men det var ikke lige den dag jeg mente.",
             ""
         ]
     },
@@ -924,9 +924,9 @@ const questions = [
         correctText: "jeeeep ❤️",
         correctMessage: "Vi begyndte, at skrive om at ses igen, og der kunne jeg mærke angsten ved tanken om hvis vi ikke skulle ses igen... Der vidste jeg, at jeg var oprigtigt vild med dig.",
         wrongMessages: [
-            "Sommerhuset var hyggeligt, men det var ikke der det gik op for mig.",
-            "Nej, det var ikke i København.",
-            "Tæt på, men nej - det var lidt senere.",
+            "Sommerhuset var hyggeligt, men der var det længe gået op for mig.",
+            "Dett var tidligere...",
+            "Tæt på, men det var faktisk før det.",
             ""
         ]
     },
@@ -944,9 +944,9 @@ const questions = [
         correctText: "Det var faktisk snyd...",
         correctMessage: "For jeg kunne ikke vælge én.",
         wrongMessages: [
-            "Slet ikke nok gættet - vi er meget mere forventningsfulde end det!",
-            "Tættere på, men stadig alt for lavt sat.",
-            "God gæt, men vi slår rekorder haha.",
+            "Slet ikke nok - vi glæder os meget mere end det (højst sandsynligvis til næste gang vi ses)!",
+            "Tæt på, men stadig alt for lavt sat.",
+            "Godt gæt, men vi glæder os altså rigtig meget (højst sandsynligvis til næste gang vi ses).",
             ""
         ]
     }
@@ -1179,7 +1179,7 @@ function selectAnswer(index, button) {
         document.getElementById("questionImageLabel").classList.add("hide");
 
         document.getElementById("feedbackTitle").innerText =
-            "Ik lader dig slippe 😌";
+            "wroong honey 😌";
 
         // Individuel tekst til netop det forkerte svar der blev valgt.
         document.getElementById("feedbackText").innerText =
